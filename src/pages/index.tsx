@@ -2,10 +2,12 @@ import type { ShoppingItem } from "@prisma/client";
 import { type NextPage } from "next";
 import Head from "next/head";
 import { useState } from "react";
+import ItemModal from "../components/ItemModal";
 import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const [items, setItems] = useState<ShoppingItem[]>([]);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const {} = trpc.item.addItem.useMutation({
     onSuccess: (item) => {
@@ -21,11 +23,13 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      {modalOpen && <ItemModal setModalOpen={setModalOpen} />}
       <main className="mx-auto my-12 max-w-3xl">
         <div className="flex justify-between">
           <h2 className="text-2xl font-semibold">Our Shopping List</h2>
           <button
             type="button"
+            onClick={() => setModalOpen(true)}
             className="ml-2 rounded bg-blue-500 p-2 text-sm font-bold text-white hover:bg-blue-600"
           >
             Add list
