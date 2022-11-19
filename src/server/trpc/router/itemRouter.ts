@@ -19,6 +19,10 @@ export const itemRouter = router({
       });
       return item;
     }),
+  getAllItems: publicProcedure.query(({ ctx }) => {
+    const items = ctx.prisma.shoppingItem.findMany();
+    return items;
+  }),
 });
 
 export type ItemRouter = typeof itemRouter;

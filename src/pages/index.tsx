@@ -9,11 +9,23 @@ const Home: NextPage = () => {
   const [items, setItems] = useState<ShoppingItem[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const {} = trpc.item.addItem.useMutation({
-    onSuccess: (item) => {
-      setItems((prev) => [...prev, item]);
-    },
-  });
+  // const {} = trpc.item.addItem.useMutation({
+  //   onSuccess: (item) => {
+  //     setItems((prev) => [...prev, item]);
+  //   },
+  // });
+
+  // First argument is the input
+  const { data: itemData, isLoading } = trpc.item.getAllItems.useQuery(
+    undefined,
+    {
+      onSuccess: (data) => {
+        setItems(data);
+      },
+    }
+  );
+
+  if (!itemData || isLoading) return <p>Loading...</p>;
 
   return (
     <>
@@ -23,7 +35,9 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {modalOpen && <ItemModal setModalOpen={setModalOpen} />}
+      {modalOpen && (
+        <ItemModal setModalOpen={setModalOpen} setItems={setItems} />
+      )}
       <main className="mx-auto my-12 max-w-3xl">
         <div className="flex justify-between">
           <h2 className="text-2xl font-semibold">Our Shopping List</h2>

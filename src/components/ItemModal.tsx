@@ -1,3 +1,4 @@
+import type { ShoppingItem } from "@prisma/client";
 import type { Dispatch, FC, SetStateAction } from "react";
 import { useState } from "react";
 import { trpc } from "../utils/trpc";
@@ -5,11 +6,17 @@ import { trpc } from "../utils/trpc";
 interface ItemModalProps {
   // look at setModalOpen in index.tsx
   setModalOpen: Dispatch<SetStateAction<boolean>>;
+  setItems: Dispatch<SetStateAction<ShoppingItem[]>>;
 }
 
-const ItemModal: FC<ItemModalProps> = ({ setModalOpen }) => {
+const ItemModal: FC<ItemModalProps> = ({ setModalOpen, setItems }) => {
   const [input, setInput] = useState<string>("");
-  const { mutate: addItem } = trpc.item.addItem.useMutation();
+  const { mutate: addItem } = trpc.item.addItem.useMutation({
+    onSuccess: (shoppingItem) => {
+      setItems((prev) => [...prev, shoppingItem]);
+    },
+  });
+
   return (
     <div className="absolute inset-0 flex items-center justify-center bg-black/75">
       <div className="space-y-4 rounded bg-white p-3">
@@ -30,7 +37,10 @@ const ItemModal: FC<ItemModalProps> = ({ setModalOpen }) => {
           </button>
           <button
             type="button"
-            onClick={() => addItem({ name: input })}
+            onClick={() => {
+              addItem({ name: input });
+              setModalOpen(false);
+            }}
             className="rounded-md bg-violet-500 p-1 text-sm text-white transition hover:bg-violet-600"
           >
             Add
