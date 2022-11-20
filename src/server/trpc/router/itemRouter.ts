@@ -23,6 +23,23 @@ export const itemRouter = router({
     const items = ctx.prisma.shoppingItem.findMany();
     return items;
   }),
+
+  deleteItem: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      const { id } = input;
+      const item = ctx.prisma.shoppingItem.delete({
+        where: {
+          id,
+        },
+      });
+
+      return item;
+    }),
 });
 
 export type ItemRouter = typeof itemRouter;

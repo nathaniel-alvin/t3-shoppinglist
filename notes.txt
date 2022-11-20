@@ -1,0 +1,15 @@
+You have to put it in an useEffect hook like this:
+
+const {data, isSuccess} = trpc.shoppingItem.getAll.useQuery();
+
+useEffect(() => {
+    if (isSuccess) setItems(data);
+}, [isSuccess, data]);
+
+Edit: you can actually use onSuccess as the second argument like this:
+const {data, isSuccess} = trpc.shoppingItem.getAll.useQuery(undefined, {
+    onSuccess: (data) => setItems(data)
+});
+
+First argument is the input but since we're not using it, we can put undefined 
+instead
