@@ -40,6 +40,26 @@ export const itemRouter = router({
 
       return item;
     }),
+
+  toggleCheck: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        checked: z.boolean(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      const { id, checked } = input;
+      const item = ctx.prisma.shoppingItem.update({
+        where: {
+          id,
+        },
+        data: {
+          checked,
+        },
+      });
+      return item;
+    }),
 });
 
 export type ItemRouter = typeof itemRouter;
